@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Resume Dashboard | Mohit Sharma</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- New Design Palette: Clean Slate (White/Gray/Teal - suitable for Ad/Digital Industry) -->
+    <style>
+        body {
+            background-color: #F8FAFC; /* Light Slate Background */
+            font-family: 'Inter', sans-serif;
+            color: #1F2937; /* Dark Gray Text */
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap');
+        
+        .accent-color { color: #06B6D4; } /* Vibrant Teal/Cyan */
+        .accent-bg { background-color: #06B6D4; }
+
+        .kpi-card {
+            background-color: #FFFFFF;
+            border-left: 5px solid #06B6D4; /* Accent border */
+            transition: all 0.3s ease;
+        }
+        .kpi-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(6, 182, 212, 0.2); /* Teal Shadow */
+        }
+        .nav-link {
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+        .nav-link:hover {
+            color: #06B6D4;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.375rem;
+            top: 0.875rem;
+            width: 1.25rem;
+            height: 1.25rem;
+            background-color: #FFFFFF;
+            border: 4px solid #06B6D4; /* Teal Dot */
+            border-radius: 50%;
+            z-index: 10;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        .skill-btn.active {
+            background-color: #06B6D4;
+            color: #FFFFFF;
+            border-color: #06B6D4;
+        }
+        .skill-btn {
+            transition: all 0.2s;
+        }
+        /* Mobile Menu Drawer Styling (As requested) */
+        #mobile-menu {
+            transition: transform 0.3s ease-in-out;
+            transform: translateY(-100%);
+            z-index: 40;
+        }
+        #mobile-menu.open {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Sticky Mobile Navigation -->
+    <header class="bg-white/95 backdrop-blur-lg sticky top-0 z-50 shadow-md border-b border-gray-100">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-extrabold accent-color tracking-wider">MOHIT SHARMA</h1>
+            
+            <!-- Desktop Navigation: Hidden on Mobile -->
+            <div class="hidden md:flex space-x-8">
+                <a href="#impact" class="nav-link text-gray-600 font-medium hover:text-[#06B6D4]">Impact Dashboard</a>
+                <a href="#journey" class="nav-link text-gray-600 font-medium hover:text-[#06B6D4]">Career Journey</a>
+                <a href="#skills" class="nav-link text-gray-600 font-medium hover:text-[#06B6D4]">Skills Deep Dive</a>
+                <a href="#interests" class="nav-link text-gray-600 font-medium hover:text-[#06B6D4]">Interests</a>
+            </div>
+
+            <!-- Mobile Menu Button (Hamburger): Visible on Mobile -->
+            <button id="menu-button" class="md:hidden p-2 text-gray-600 hover:text-[#06B6D4]" aria-label="Toggle navigation">
+                <span class="text-3xl font-light">&#x2261;</span> 
+            </button>
+        </nav>
+        
+        <!-- Mobile Menu Drawer: Slides down from the top -->
+        <div id="mobile-menu" class="fixed top-[64px] left-0 w-full h-fit bg-white border-b border-gray-200 shadow-xl md:hidden">
+            <div class="flex flex-col p-4 space-y-3">
+                <a href="#impact" class="mobile-nav-link text-gray-800 font-semibold hover:text-[#06B6D4] transition p-2 border-b border-gray-100">Impact Dashboard</a>
+                <a href="#journey" class="mobile-nav-link text-gray-800 font-semibold hover:text-[#06B6D4] transition p-2 border-b border-gray-100">Career Journey</a>
+                <a href="#skills" class="mobile-nav-link text-gray-800 font-semibold hover:text-[#06B6D4] transition p-2 border-b border-gray-100">Skills Deep Dive</a>
+                <a href="#interests" class="mobile-nav-link text-gray-800 font-semibold hover:text-[#06B6D4] transition p-2">Interests</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <!-- Mobile Viewing Suggestion (Visible only on mobile: md:hidden) -->
+        <div class="bg-amber-100 text-amber-800 p-3 rounded-lg text-center font-medium mb-8 md:hidden shadow-md border border-amber-200">
+            <p>Heads up! For the best interactive experience, please **View on Desktop Mode**.</p>
+        </div>
+
+        <section id="intro" class="text-center mb-24">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">Senior Digital Strategist</h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-8">Specializing in Performance Marketing & Social Media Optimization (SMO)</p>
+            
+            <!-- Contact Details -->
+            <div class="mt-4 flex justify-center space-x-6 text-base font-medium flex-wrap">
+                <a href="mailto:smohit8003@gmail.com" class="text-gray-600 hover:text-[#06B6D4] transition p-1">smohit8003@gmail.com</a>
+                <a href="tel:+919971341947" class="text-gray-600 hover:text-[#06B6D4] transition p-1">+91-9971341947</a>
+                <a href="https://www.linkedin.com/in/mohitsharma2211" target="_blank" class="text-gray-600 hover:text-[#06B6D4] transition p-1">LinkedIn Profile</a>
+            </div>
+
+            <div id="summary-content" class="mt-12 text-left max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                 <p class="text-lg text-gray-700 leading-relaxed">Highly accomplished Digital Marketing Strategist with 5+ years of experience specializing in Social Media Optimization (SMO), Content Strategy, and data-driven performance analysis across Meta (Facebook/Instagram) and Google platforms. Proven ability to translate complex business goals into cohesive, results-oriented digital campaigns. Drove a **150% increase in Sales Qualified Leads (SQLs)** and successfully managed multi-million dollar ad budgets, resulting in significant ROI and conversion rate improvements.</p>
+            </div>
+        </section>
+
+        <!-- 1. Impact Dashboard -->
+        <section id="impact" class="mb-24">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-extrabold text-gray-900 border-b-2 border-cyan-200 inline-block pb-1">Impact Dashboard</h3>
+                <p class="text-gray-600 mt-2">A snapshot of key career achievements and performance metrics.</p>
+            </div>
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-3 md:gap-8">
+                <!-- KPI Card 1: SQL Growth -->
+                <div class="kpi-card p-6 rounded-xl text-center shadow-lg">
+                    <span class="text-6xl font-black accent-color block mb-2">150%</span>
+                    <p class="mt-2 text-xl font-bold text-gray-800">SQL Growth</p>
+                    <p class="text-gray-500 text-sm">Increased Sales Qualified Leads in Q3 2024.</p>
+                </div>
+                <!-- KPI Card 2: Opportunity Value -->
+                <div class="kpi-card p-6 rounded-xl text-center shadow-lg">
+                    <span class="text-6xl font-black accent-color block mb-2">$1M+</span>
+                    <p class="mt-2 text-xl font-bold text-gray-800">Opportunity Qualified</p>
+                    <p class="text-gray-500 text-sm">Identified major data analytics solution opportunity.</p>
+                </div>
+                <!-- KPI Card 3: Quota Achievement -->
+                <div class="kpi-card p-6 rounded-xl text-center shadow-lg">
+                    <span class="text-6xl font-black accent-color block mb-2">+25%</span>
+                    <p class="mt-2 text-xl font-bold text-gray-800">Quota Exceeded</p>
+                    <p class="text-gray-500 text-sm">Consistently surpassed individual quarterly sales quotas.</p>
+                </div>
+            </div>
+             <!-- Impact Chart -->
+             <div class="mt-16">
+                <div class="text-center mb-8">
+                     <h4 class="text-2xl font-bold text-gray-800">Visualizing SQL Growth (Q3 2024)</h4>
+                     <p class="text-gray-600 mt-1">Strategic campaigns delivered a significant performance uplift.</p>
+                </div>
+                <div class="chart-container bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                    <canvas id="impactChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Interactive Career Journey -->
+        <section id="journey" class="mb-24">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-extrabold text-gray-900 border-b-2 border-cyan-200 inline-block pb-1">Interactive Career Journey</h3>
+                <p class="text-gray-600 mt-2">Select a role to view specific contributions and achievements.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:col-span-4 gap-8">
+                <!-- Timeline Navigation Column (Fixed on mobile) -->
+                <div class="md:col-span-1 relative">
+                    <div class="border-l-4 border-gray-300 pl-10 space-y-12 py-4">
+                    </div>
+                </div>
+                <!-- Job Details Display Column (Scrollable on mobile) -->
+                <div class="md:col-span-2 bg-white p-8 rounded-xl shadow-lg border border-gray-200 min-h-[300px]">
+                    <div id="job-details">
+                         <p class="text-gray-500 text-lg">Click a job title on the left to see the detailed responsibilities and achievements.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Skills Deep Dive -->
+        <section id="skills" class="mb-24">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-extrabold text-gray-900 border-b-2 border-cyan-200 inline-block pb-1">Skills Deep Dive</h3>
+                <p class="text-gray-600 mt-2">A visual breakdown of competencies. Use the filters to explore specific areas.</p>
+            </div>
+            <!-- Filter Buttons -->
+            <div class="flex justify-center space-x-2 md:space-x-4 mb-8 flex-wrap gap-2">
+            </div>
+            <div class="chart-container bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                <canvas id="skillsChart"></canvas>
+            </div>
+        </section>
+
+        <!-- 4. Interests & Personal Development -->
+        <section id="interests" class="mb-24">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-extrabold text-gray-900 border-b-2 border-cyan-200 inline-block pb-1">Interests & Development</h3>
+                <p class="text-gray-600 mt-2">Activities that foster strategic thinking, discipline, and analytical growth.</p>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                <!-- Interest Card 1 -->
+                <div class="bg-white p-6 rounded-xl text-center shadow-md border border-gray-100 hover:shadow-xl transition">
+                    <span class="text-4xl block mb-2 accent-color" role="img" aria-label="Reading">📚</span>
+                    <p class="font-bold text-gray-800 mt-2">Reading</p>
+                    <p class="text-xs text-gray-500">Continuous learning.</p>
+                </div>
+                <!-- Interest Card 2 -->
+                <div class="bg-white p-6 rounded-xl text-center shadow-md border border-gray-100 hover:shadow-xl transition">
+                    <span class="text-4xl block mb-2 accent-color" role="img" aria-label="Chess">♟</span>
+                    <p class="font-bold text-gray-800 mt-2">Chess</p>
+                    <p class="text-xs text-gray-500">Strategic planning.</p>
+                </div>
+                <!-- Interest Card 3 -->
+                <div class="bg-white p-6 rounded-xl text-center shadow-md border border-gray-100 hover:shadow-xl transition">
+                    <span class="text-4xl block mb-2 accent-color" role="img" aria-label="Yoga">🧘</span>
+                    <p class="font-bold text-gray-800 mt-2">Yoga</p>
+                    <p class="text-xs text-gray-500">Focus & clarity.</p>
+                </div>
+                <!-- Interest Card 4 -->
+                <div class="bg-white p-6 rounded-xl text-center shadow-md border border-gray-100 hover:shadow-xl transition">
+                    <span class="text-4xl block mb-2 accent-color" role="img" aria-label="Digital Content">📱</span>
+                    <p class="font-bold text-gray-800 mt-2">Digital Curation</p>
+                    <p class="text-xs text-gray-500">Trend mastery (SMO).</p>
+                </div>
+                <!-- Interest Card 5 -->
+                <div class="bg-white p-6 rounded-xl text-center shadow-md border border-gray-100 hover:shadow-xl transition">
+                    <span class="text-4xl block mb-2 accent-color" role="img" aria-label="Gaming">🎮</span>
+                    <p class="font-bold text-gray-800 mt-2">Data-Driven Gaming</p>
+                    <p class="text-xs text-gray-500">Performance analysis.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200">
+        <div class="container mx-auto px-6 py-8 text-center text-gray-600">
+            <p class="text-lg font-semibold accent-color">Connect with Mohit</p>
+            <p class="mt-2 text-sm md:text-base">
+                <a href="mailto:smohit8003@gmail.com" class="hover:text-gray-800 transition p-1">smohit8003@gmail.com</a> |
+                <a href="tel:+919971341947" class="hover:text-gray-800 transition p-1">+91-9971341947</a> |
+                <a href="https://www.linkedin.com/in/mohitsharma2211" target="_blank" class="hover:text-gray-800 transition p-1">LinkedIn Profile</a>
+            </p>
+            <p class="mt-4 text-xs text-gray-400">&copy; 2025 Mohit Sharma. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // FUNCTIONALITY: Mobile Menu Toggle
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('open');
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Event listeners for mobile menu and links (CRITICAL FOR MOBILE UX)
+            const menuButton = document.getElementById('menu-button');
+            if (menuButton) {
+                menuButton.addEventListener('click', toggleMenu);
+            }
+            // All mobile links must close the menu when clicked
+            document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                link.addEventListener('click', toggleMenu);
+            });
+
+            // --- DATA STRUCTURES ---
+            const professionalExperience = [
+                {
+                    role: 'Senior Account Executive',
+                    company: 'TP - Teleperformance',
+                    period: 'Jan 2025 – Present',
+                    details: [
+                        '**Acquired new business** within strategic markets by driving a multi-channel outbound strategy, resulting in a **150% increase in Sales Qualified Leads (SQLs)** in Q3 2024.',
+                        'Facilitated **new client onboarding** by collaborating with Google Cloud sales teams to create customized engagement plans and align internal resources for successful deployment.',
+                        'Cultivated robust **client relationships** through proactive check-ins, delivering strategic insights, and ensuring the smooth transition of qualified leads to the core sales team.',
+                        'Utilized advanced lead enrichment tools, including **LinkedIn Sales Navigator** for precise targeting and **SalesLoft** for scalable cold outreach, ensuring a high-quality pipeline.',
+                        'Built and maintained custom **Salesforce Dashboards** and reports, providing executive-level visibility into funnel metrics, campaign performance, and client engagement.'
+                    ]
+                },
+                {
+                    role: 'Senior Executive (Meta Ads Strategist)',
+                    company: 'Wipro Limited',
+                    period: 'Oct 2022 – Dec 2024',
+                    details: [
+                        'Spearheaded a Meta Ads campaign for a **luxury skincare product**, achieving a 45% reduction in CPA (Cost Per Acquisition) and generating a 3.5x Return on Ad Spend (ROAS) in Q4 2023.',
+                        'Developed and managed lead generation campaigns for a **global hearing healthcare client**, resulting in a 25% increase in booked appointments and a 1.8x boost in lead quality through custom audiences and dedicated lead forms.',
+                        'Led the development and implementation of comprehensive Meta Ads strategies (Facebook & Instagram), aligning ad creative and audience targeting with client goals.',
+                        'Provided strategic oversight on ad creative optimization, driving engagement and maximizing ROI for diverse clients.',
+                        'Monitored campaign performance, delivering actionable insights and strategic adjustments to clients to continuously improve results.'
+                    ]
+                },
+                {
+                    role: 'Senior Executive (Digital Marketing Specialist)',
+                    company: 'WNS INDIA PRIVATE LIMITED',
+                    period: 'May 2021 – Sep 2022',
+                    details: [
+                        'Executed a six-month Google Ads lead generation strategy for a **Real Estate Brokerage Firm**, delivering a **22% ROI** and maintaining a conversion rate of **3.50%** on a total ad spend of ₹1,00,000.',
+                        'Managed and optimized multiple Google Ads campaigns (paid search, display, and remarketing), driving significant improvements in ROI and conversion rates.',
+                        'Developed and executed A/B testing for ad copy, bidding strategies, and landing pages to refine performance and maximize results.',
+                        'Managed daily and monthly budgets for cross-network campaigns, optimizing bidding strategies for cost-efficiency and precise audience targeting.'
+                    ]
+                },
+                {
+                    role: 'Marketing Associate',
+                    company: 'Sitel India PVT. LTD.',
+                    period: 'Nov 2019 – Feb 2021',
+                    details: [
+                        'Provided **hands-on management and optimization** of social media marketing campaigns across platforms including Facebook, YouTube, Instagram, LinkedIn, TikTok, and Pinterest.',
+                        'Responsible for the **timely execution of daily, weekly, and quarterly campaign tasks** to ensure established performance targets were consistently met.',
+                        'Assisted in the **development and planning of search campaign structures** and overall marketing strategies, contributing to the foundational strategic outlook.',
+                        'Generated and presented insightful **client reports** on campaign performance, highlighting key metrics and contributing to data-driven strategic planning.'
+                    ]
+                }
+            ];
+            
+            const skillsData = {
+                'All': {
+                    labels: ['Content Strategy', 'SMO', 'Brand Communication', 'Data Analysis', 'A/B Testing', 'Meta Ads', 'Google Ads', 'Salesforce'],
+                    data: [90, 95, 85, 95, 88, 98, 92, 95]
+                },
+                'Strategy': {
+                    labels: ['Content Strategy', 'Brand Communication', 'Digital Campaign Strategy', 'Client Relations'],
+                    data: [90, 85, 92, 95]
+                },
+                'Social & Content': {
+                    labels: ['Social Media Optimization (SMO)', 'PR Support', 'Facebook & Instagram Ads'],
+                    data: [95, 80, 98]
+                },
+                'Analytics': {
+                    labels: ['Performance Metrics Analysis', 'Data-Driven Decisions', 'A/B Testing', 'ROI & CPA/CPL Reduction'],
+                    data: [95, 93, 88, 91]
+                },
+                'Tools': {
+                    labels: ['Salesforce (Dashboarding)', 'SalesLoft', 'LinkedIn Sales Navigator', 'Meta Ads Manager', 'Google Ads'],
+                    data: [95, 90, 88, 98, 92]
+                }
+            };
+
+            // --- CAREER JOURNEY LOGIC ---
+            const timelineContainer = document.querySelector('#journey .space-y-12');
+            const jobDetailsContainer = document.getElementById('job-details');
+
+            professionalExperience.forEach((job, index) => {
+                const timelineItem = document.createElement('div');
+                timelineItem.className = 'relative timeline-item';
+                
+                const jobButton = document.createElement('button');
+                jobButton.className = 'text-left w-full focus:outline-none p-1 rounded-md hover:bg-cyan-50 transition';
+                jobButton.innerHTML = `
+                    <h4 class="text-lg font-semibold text-gray-800">${job.role}</h4>
+                    <p class="text-gray-600">${job.company}</p>
+                    <p class="text-sm text-gray-500">${job.period}</p>
+                `;
+                jobButton.addEventListener('click', () => {
+                    displayJobDetails(index);
+                    // Optional: Highlight the active button
+                    document.querySelectorAll('#journey button').forEach(btn => btn.classList.remove('bg-cyan-100'));
+                    jobButton.classList.add('bg-cyan-100');
+                });
+                
+                timelineItem.appendChild(jobButton);
+                timelineContainer.appendChild(timelineItem);
+            });
+
+            function displayJobDetails(index) {
+                const job = professionalExperience[index];
+                jobDetailsContainer.innerHTML = `
+                    <h4 class="text-2xl font-bold text-gray-900 accent-color">${job.role}</h4>
+                    <p class="text-lg font-medium text-gray-700 mt-1">${job.company} | ${job.period}</p>
+                    <ul class="mt-6 space-y-4 list-disc list-inside text-gray-600">
+                        ${job.details.map(detail => `<li>${detail}</li>`).join('')}
+                    </ul>
+                `;
+            }
+            // Display the most recent job details by default
+            displayJobDetails(0);
+            document.querySelector('#journey button').classList.add('bg-cyan-100');
+
+
+            // --- SKILLS CHART LOGIC ---
+            const skillButtonsContainer = document.querySelector('#skills .flex');
+            Object.keys(skillsData).forEach((skill, index) => {
+                const button = document.createElement('button');
+                button.textContent = skill;
+                button.className = 'skill-btn px-4 py-2 rounded-full text-sm font-medium border border-[#06B6D4] text-[#06B6D4] transition hover:bg-[#06B6D4] hover:text-white shadow-md';
+                if(index === 0) button.classList.add('active');
+                button.addEventListener('click', () => {
+                    updateSkillsChart(skill);
+                    document.querySelectorAll('.skill-btn').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                });
+                skillButtonsContainer.appendChild(button);
+            });
+            
+            const skillsCtx = document.getElementById('skillsChart').getContext('2d');
+            const skillsChart = new Chart(skillsCtx, {
+                type: 'bar',
+                data: {
+                    labels: skillsData['All'].labels,
+                    datasets: [{
+                        label: 'Proficiency Level',
+                        data: skillsData['All'].data,
+                        backgroundColor: 'rgba(6, 182, 212, 0.8)', /* Teal */
+                        borderColor: 'rgba(6, 182, 212, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` Proficiency: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { beginAtZero: true, max: 100, grid: { color: '#E5E7EB' } },
+                        y: { ticks: { autoSkip: false }, grid: { display: false } }
+                    }
+                }
+            });
+
+            function updateSkillsChart(skill) {
+                const newData = skillsData[skill];
+                skillsChart.data.labels = newData.labels;
+                skillsChart.data.datasets[0].data = newData.data;
+                skillsChart.update();
+            }
+            
+            // --- IMPACT CHART LOGIC ---
+            const impactCtx = document.getElementById('impactChart').getContext('2d');
+            new Chart(impactCtx, {
+                 type: 'bar',
+                data: {
+                    labels: ['Baseline', 'Achieved in Q3 2024'],
+                    datasets: [{
+                        label: 'Sales Qualified Leads Index',
+                        data: [100, 250],
+                        backgroundColor: ['#D1D5DB', '#06B6D4'], /* Gray for baseline, Teal for achieved */
+                        borderColor: ['#9CA3AF', '#06B6D4'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                         tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    if(context.dataIndex === 0) return ' Baseline Performance Index: 100';
+                                    return ' Achieved Performance Index: 250 (+150%)';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            },
+                            grid: { color: '#E5E7EB' }
+                        },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
